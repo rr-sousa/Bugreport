@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:sharedUserId="android.uid.system">
+
+    <!---android:dataExtractionRules="@xml/data_extraction_rules"-->
+    <uses-permission
+        android:name="android.permission.DUMP"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.APPROVE_INCIDENT_REPORTS"
+        tools:ignore="ProtectedPermissions" />
+    <!--uses-permission
+        android:name="android.permission.SYSTEM_ALERT_WINDOW"
+        tools:remove="${excludeSystemAlertWindowPermission}" />
+    <uses-permission
+        android:name="${permissionName}"
+        tools:node="remove" /-->
+
+    <application
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.API30"
+        tools:targetApi="31">
+        <receiver
+            android:name=".DeviceAdminReceiver"
+            android:exported="true"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_receiver" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+                <action android:name="android.app.action.BUGREPORT_SHARE" />
+                <action android:name="android.app.action.BUGREPORT_FAILED" />
+                <action android:name="android.intent.action.REMOTE_BUGREPORT_DISPATCH" />
+                <action android:name="com.android.server.action.REMOTE_BUGREPORT_SHARING_ACCEPTED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
