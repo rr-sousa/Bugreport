@@ -10,7 +10,6 @@ import android.content.pm.PackageManager
 import android.os.BugreportManager
 import android.os.BugreportParams
 import android.os.Bundle
-import android.os.IncidentManager
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import android.widget.Button
@@ -60,8 +59,7 @@ class MainActivity : AppCompatActivity() {
 
         // Check current user
         val currentUser = ActivityManager.getService().currentUser
-        Log.d(TAG, "Current user: $currentUser")
-        Log.d(TAG, "Current user is admin? " + currentUser.isAdmin.toString())
+        Log.d(TAG, "Current user: ${currentUser.name} ${currentUser.id} admin:${currentUser.isAdmin}")
 
         // Check and request DUMP permission
         if (ActivityCompat.checkSelfPermission(
@@ -138,6 +136,8 @@ class MainActivity : AppCompatActivity() {
                 super.onFinished()
                 // Handle the bugreport file, e.g., upload it to a server or save it locally
                 Log.d(TAG, "Bug report saved on: $outputDir/$bugreportFileName")
+                val fileSize = bugreportFile.length()/1024/1024
+                Log.d(TAG, "Bug report size: $fileSize MB")
             }
 
             override fun onError(errorCode: Int) {
@@ -163,40 +163,6 @@ class MainActivity : AppCompatActivity() {
         )
 
         Log.i(TAG, "Requested Bug report")
-        // Approve bug report sharing
-        approvePendingReports()
-    }
-
-    @SuppressLint("WrongConstant")
-    private fun approvePendingReports() {
-        var pendingReportApproved = false
-        val im: IncidentManager?
-        im = getSystemService(INCIDENT_SERVICE) as IncidentManager
-
-        while (!pendingReportApproved) {
-            /// TO IMPROVE, not the best way for sure, but it's needed so that im.pendingReports is not empty
-            try {
-                Thread.sleep(5000)
-            } catch (e: InterruptedException) {
-                throw RuntimeException(e)
-            }
-            Log.d(TAG, "Slept 5 seconds")
-            ////////////
-            val pendingReportList = im.pendingReports
-            for (i in pendingReportList) {
-                val pendingReport = i.uri
-                val pendingReportString = pendingReport.toString()
-                Log.d(TAG, "Pending report to approve: $pendingReportString")
-                if (pendingReportString.contains("android.os.IncidentManager/pending")
-                    && pendingReportString.contains("pkg=$packageName")
-                    && pendingReportString.contains("flags=1")
-                ) {
-                    im.approveReport(pendingReport)
-                    pendingReportApproved = true
-                    Log.d(TAG, "Report approved: $pendingReportString")
-                }
-            }
-        }
     }
 
 }
