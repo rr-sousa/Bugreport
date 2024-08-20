@@ -5,7 +5,7 @@ More information: [OS Bug reports](https://www.notion.so/swordhealth/OS-Bug-repo
 
 ## Requirements
 - Sign the app (put swordkeystore.jks and swordkeystore.properties files on root and app folders project)
-- Use a ROM with proper SE Linux rules provided by OS team
+- Use a PhoenixOS image with proper SE Linux rules provided by OS team
 
 ## HOW TO
 - Clone this repo
